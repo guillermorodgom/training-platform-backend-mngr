@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "curso")
+@Table(name = "Curso")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,7 +41,12 @@ public class Curso {
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
     
-    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "CursoCapitulo",
+        joinColumns = @JoinColumn(name = "id_curso"),
+        inverseJoinColumns = @JoinColumn(name = "id_capitulo")
+    )
     private List<Capitulo> capitulos;
     
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

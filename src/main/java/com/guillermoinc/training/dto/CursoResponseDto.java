@@ -21,5 +21,5 @@ public class CursoResponseDto {
     private String nivel;
     private String estado;
     private LocalDateTime fechaCreacion;
-    private List<CapituloResponseDto> capitulos;
+    private List<CapituloSimpleDto> capitulos;
 }

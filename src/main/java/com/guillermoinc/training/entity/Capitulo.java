@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "capitulo")
+@Table(name = "Capitulo")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,9 +21,6 @@ public class Capitulo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_capitulo")
     private Integer idCapitulo;
-    
-    @Column(name = "id_curso", nullable = false, insertable = false, updatable = false)
-    private Integer idCurso;
     
     @Column(nullable = false, length = 200)
     private String titulo;
@@ -37,9 +34,8 @@ public class Capitulo {
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_curso", referencedColumnName = "id_curso")
-    private Curso curso;
+    @ManyToMany(mappedBy = "capitulos", fetch = FetchType.LAZY)
+    private List<Curso> cursos;
     
     @OneToMany(mappedBy = "capitulo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgresoUsuarioCapitulo> progresosUsuario;

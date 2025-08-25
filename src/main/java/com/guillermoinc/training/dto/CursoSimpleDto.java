@@ -6,18 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CapituloResponseDto {
+public class CursoSimpleDto {
     
-    private Integer idCapitulo;
+    private Integer idCurso;
     private String titulo;
-    private String contenidoUrl;
-    private Integer orden;
+    private String descripcion;
+    private String categoria;
+    private String nivel;
+    private String estado;
     private LocalDateTime fechaCreacion;
-    private List<CursoSimpleDto> cursos;
 }
