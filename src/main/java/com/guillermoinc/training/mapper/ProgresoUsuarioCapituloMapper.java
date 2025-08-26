@@ -9,9 +9,10 @@ import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {CapituloMapper.class})
+@Mapper(componentModel = "spring")
 public interface ProgresoUsuarioCapituloMapper {
     
+    @Mapping(target = "capitulo", ignore = true)
     ProgresoUsuarioCapituloResponseDto toDto(ProgresoUsuarioCapitulo progresoUsuarioCapitulo);
     
     List<ProgresoUsuarioCapituloResponseDto> toDto(List<ProgresoUsuarioCapitulo> progresosUsuarioCapitulo);

@@ -23,7 +23,7 @@ public class ProgresoUsuarioCurso {
     private Integer idUsuario;
     
     @Id
-    @Column(name = "id_curso", insertable = false, updatable = false)
+    @Column(name = "id_curso")
     private Integer idCurso;
     
     @Column(length = 20)
@@ -41,7 +41,7 @@ public class ProgresoUsuarioCurso {
     private LocalDateTime fechaFin;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_curso", referencedColumnName = "id_curso")
+    @JoinColumn(name = "id_curso", referencedColumnName = "id_curso", insertable = false, updatable = false)
     private Curso curso;
     
     @PrePersist

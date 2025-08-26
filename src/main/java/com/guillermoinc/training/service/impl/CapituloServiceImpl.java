@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +26,18 @@ public class CapituloServiceImpl implements CapituloService {
     
     @Override
     public CapituloResponseDto crearCapitulo(CapituloRequestDto capituloRequestDto) {
-        Curso curso = cursoRepository.findById(capituloRequestDto.getIdCurso())
-                .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + capituloRequestDto.getIdCurso()));
-        
         Capitulo capitulo = capituloMapper.toEntity(capituloRequestDto);
-        capitulo.setCurso(curso);
+        
+        // Asociar con cursos si se proporcionan IDs
+        if (capituloRequestDto.getIdsCursos() != null && !capituloRequestDto.getIdsCursos().isEmpty()) {
+            List<Curso> cursos = new ArrayList<>();
+            for (Integer idCurso : capituloRequestDto.getIdsCursos()) {
+                Curso curso = cursoRepository.findById(idCurso)
+                        .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + idCurso));
+                cursos.add(curso);
+            }
+            capitulo.setCursos(cursos);
+        }
         
         Capitulo capituloGuardado = capituloRepository.save(capitulo);
         return capituloMapper.toDto(capituloGuardado);
@@ -73,6 +81,13 @@ public class CapituloServiceImpl implements CapituloService {
     
     @Override
     @Transactional(readOnly = true)
+    public List<CapituloResponseDto> obtenerCapitulosIndependientes() {
+        List<Capitulo> capitulos = capituloRepository.findCapitulosIndependientes();
+        return capituloMapper.toDto(capitulos);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
     public Long contarCapitulosPorCurso(Integer idCurso) {
         return capituloRepository.countByIdCurso(idCurso);
     }
@@ -82,13 +97,62 @@ public class CapituloServiceImpl implements CapituloService {
         Capitulo capitulo = capituloRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Capítulo no encontrado con ID: " + id));
         
-        if (!capitulo.getIdCurso().equals(capituloRequestDto.getIdCurso())) {
-            Curso nuevoCurso = cursoRepository.findById(capituloRequestDto.getIdCurso())
-                    .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + capituloRequestDto.getIdCurso()));
-            capitulo.setCurso(nuevoCurso);
+        // Actualizar relaciones con cursos
+        if (capituloRequestDto.getIdsCursos() != null) {
+            List<Curso> cursos = new ArrayList<>();
+            for (Integer idCurso : capituloRequestDto.getIdsCursos()) {
+                Curso curso = cursoRepository.findById(idCurso)
+                        .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + idCurso));
+                cursos.add(curso);
+            }
+            capitulo.setCursos(cursos);
+        } else {
+            // Si no se proporcionan IDs, limpiar todas las asociaciones
+            capitulo.setCursos(new ArrayList<>());
         }
         
         capituloMapper.updateEntityFromDto(capituloRequestDto, capitulo);
+        Capitulo capituloActualizado = capituloRepository.save(capitulo);
+        return capituloMapper.toDto(capituloActualizado);
+    }
+    
+    @Override
+    public CapituloResponseDto asociarCapituloConCursos(Integer idCapitulo, List<Integer> idsCursos) {
+        Capitulo capitulo = capituloRepository.findById(idCapitulo)
+                .orElseThrow(() -> new RuntimeException("Capítulo no encontrado con ID: " + idCapitulo));
+        
+        List<Curso> cursosExistentes = capitulo.getCursos();
+        if (cursosExistentes == null) {
+            cursosExistentes = new ArrayList<>();
+        }
+        
+        for (Integer idCurso : idsCursos) {
+            Curso curso = cursoRepository.findById(idCurso)
+                    .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + idCurso));
+            if (!cursosExistentes.contains(curso)) {
+                cursosExistentes.add(curso);
+            }
+        }
+        
+        capitulo.setCursos(cursosExistentes);
+        Capitulo capituloActualizado = capituloRepository.save(capitulo);
+        return capituloMapper.toDto(capituloActualizado);
+    }
+    
+    @Override
+    public CapituloResponseDto desasociarCapituloDeCurso(Integer idCapitulo, Integer idCurso) {
+        Capitulo capitulo = capituloRepository.findById(idCapitulo)
+                .orElseThrow(() -> new RuntimeException("Capítulo no encontrado con ID: " + idCapitulo));
+        
+        Curso curso = cursoRepository.findById(idCurso)
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + idCurso));
+        
+        List<Curso> cursos = capitulo.getCursos();
+        if (cursos != null) {
+            cursos.remove(curso);
+            capitulo.setCursos(cursos);
+        }
+        
         Capitulo capituloActualizado = capituloRepository.save(capitulo);
         return capituloMapper.toDto(capituloActualizado);
     }

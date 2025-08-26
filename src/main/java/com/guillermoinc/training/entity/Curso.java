@@ -52,6 +52,9 @@ public class Curso {
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProgresoUsuarioCurso> progresoUsuarios;
     
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Contenido> contenidos;
+    
     @PrePersist
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();

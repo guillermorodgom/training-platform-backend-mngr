@@ -19,9 +19,15 @@ public interface CapituloService {
     
     List<CapituloResponseDto> buscarCapitulosPorTitulo(String titulo);
     
+    List<CapituloResponseDto> obtenerCapitulosIndependientes();
+    
     Long contarCapitulosPorCurso(Integer idCurso);
     
     CapituloResponseDto actualizarCapitulo(Integer id, CapituloRequestDto capituloRequestDto);
+    
+    CapituloResponseDto asociarCapituloConCursos(Integer idCapitulo, List<Integer> idsCursos);
+    
+    CapituloResponseDto desasociarCapituloDeCurso(Integer idCapitulo, Integer idCurso);
     
     void eliminarCapitulo(Integer id);
 }

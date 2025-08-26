@@ -25,5 +25,9 @@ public interface CursoService {
     
     CursoResponseDto actualizarCurso(Integer id, CursoRequestDto cursoRequestDto);
     
+    CursoResponseDto asociarCursoConCapitulos(Integer idCurso, List<Integer> idsCapitulos);
+    
+    CursoResponseDto desasociarCursoDeCapitulo(Integer idCurso, Integer idCapitulo);
+    
     void eliminarCurso(Integer id);
 }
