@@ -20,7 +20,7 @@ public class ProgresoUsuarioCurso {
     
     @Id
     @Column(name = "id_usuario")
-    private Integer idUsuario;
+    private Long idUsuario;
     
     @Id
     @Column(name = "id_curso")
@@ -43,6 +43,10 @@ public class ProgresoUsuarioCurso {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_curso", referencedColumnName = "id_curso", insertable = false, updatable = false)
     private Curso curso;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", insertable = false, updatable = false)
+    private Usuario usuario;
     
     @PrePersist
     protected void onCreate() {

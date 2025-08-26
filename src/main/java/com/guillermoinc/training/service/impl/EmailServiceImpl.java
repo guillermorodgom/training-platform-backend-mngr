@@ -30,15 +30,15 @@ public class EmailServiceImpl implements EmailService {
     
     @Override
     public void enviarNotificacionNuevoCurso(Curso curso) {
-        String asunto = "🚀 Nuevo Curso Disponible: " + curso.getTitulo();
+        String asunto = "Nuevo Curso Disponible: " + curso.getTitulo();
         String contenido = construirContenidoNotificacion(curso);
         
         try {
             enviarEmail(adminEmail, asunto, contenido);
-            log.info("Notificación enviada exitosamente para el curso: {} (ID: {})", 
+            log.info("Notificacion enviada exitosamente para el curso: {} (ID: {})", 
                     curso.getTitulo(), curso.getIdCurso());
         } catch (Exception e) {
-            log.error("Error al enviar notificación para el curso: {} (ID: {}). Error: {}", 
+            log.error("Error al enviar notificacion para el curso: {} (ID: {}). Error: {}", 
                     curso.getTitulo(), curso.getIdCurso(), e.getMessage());
         }
     }
@@ -74,56 +74,37 @@ public class EmailServiceImpl implements EmailService {
     }
     
     private String construirContenidoNotificacion(Curso curso) {
-        return String.format("""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-                    .container { max-width: 600px; margin: 0 auto; }
-                    .header { background-color: #007bff; color: white; padding: 20px; text-align: center; }
-                    .content { padding: 20px; background-color: #f8f9fa; }
-                    .course-info { background-color: white; padding: 15px; border-radius: 5px; margin: 15px 0; }
-                    .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>🚀 ¡Nuevo Curso Disponible!</h1>
-                    </div>
-                    <div class="content">
-                        <h2>Hola Administrador,</h2>
-                        <p>Te informamos que se ha creado un nuevo curso en la plataforma de entrenamiento.</p>
-                        
-                        <div class="course-info">
-                            <h3>📚 Detalles del Curso:</h3>
-                            <p><strong>ID:</strong> %d</p>
-                            <p><strong>Título:</strong> %s</p>
-                            <p><strong>Descripción:</strong> %s</p>
-                            <p><strong>Categoría:</strong> %s</p>
-                            <p><strong>Nivel:</strong> %s</p>
-                            <p><strong>Estado:</strong> %s</p>
-                            <p><strong>Fecha de Creación:</strong> %s</p>
-                        </div>
-                        
-                        <p>El curso ya está disponible para los estudiantes en la plataforma.</p>
-                    </div>
-                    <div class="footer">
-                        <p>© 2025 Plataforma de Entrenamiento - Notificación Automática</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """,
-            curso.getIdCurso(),
-            curso.getTitulo(),
-            curso.getDescripcion() != null ? curso.getDescripcion() : "Sin descripción",
-            curso.getCategoria() != null ? curso.getCategoria() : "Sin categoría",
-            curso.getNivel() != null ? curso.getNivel() : "Sin nivel",
-            curso.getEstado(),
-            curso.getFechaCreacion()
-        );
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html>")
+            .append("<html><head><meta charset=\"UTF-8\">")
+            .append("<style>")
+            .append("body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }")
+            .append(".container { max-width: 600px; margin: 0 auto; }")
+            .append(".header { background-color: #007bff; color: white; padding: 20px; text-align: center; }")
+            .append(".content { padding: 20px; background-color: #f8f9fa; }")
+            .append(".course-info { background-color: white; padding: 15px; border-radius: 5px; margin: 15px 0; }")
+            .append(".footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }")
+            .append("</style></head><body>")
+            .append("<div class=\"container\">")
+            .append("<div class=\"header\"><h1>Nuevo Curso Disponible!</h1></div>")
+            .append("<div class=\"content\">")
+            .append("<h2>Hola Administrador,</h2>")
+            .append("<p>Te informamos que se ha creado un nuevo curso en la plataforma de entrenamiento.</p>")
+            .append("<div class=\"course-info\">")
+            .append("<h3>Detalles del Curso:</h3>")
+            .append("<p><strong>ID:</strong> ").append(curso.getIdCurso()).append("</p>")
+            .append("<p><strong>Titulo:</strong> ").append(curso.getTitulo()).append("</p>")
+            .append("<p><strong>Descripcion:</strong> ").append(curso.getDescripcion() != null ? curso.getDescripcion() : "Sin descripcion").append("</p>")
+            .append("<p><strong>Categoria:</strong> ").append(curso.getCategoria() != null ? curso.getCategoria() : "Sin categoria").append("</p>")
+            .append("<p><strong>Nivel:</strong> ").append(curso.getNivel() != null ? curso.getNivel() : "Sin nivel").append("</p>")
+            .append("<p><strong>Estado:</strong> ").append(curso.getEstado()).append("</p>")
+            .append("<p><strong>Fecha de Creacion:</strong> ").append(curso.getFechaCreacion()).append("</p>")
+            .append("</div>")
+            .append("<p>El curso ya esta disponible para los estudiantes en la plataforma.</p>")
+            .append("</div>")
+            .append("<div class=\"footer\">")
+            .append("<p>2025 Plataforma de Entrenamiento - Notificacion Automatica</p>")
+            .append("</div></div></body></html>");
+        return html.toString();
     }
 }

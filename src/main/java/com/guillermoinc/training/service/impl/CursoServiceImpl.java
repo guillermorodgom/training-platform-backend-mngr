@@ -11,6 +11,8 @@ import com.guillermoinc.training.service.CursoService;
 import com.guillermoinc.training.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,22 +29,26 @@ public class CursoServiceImpl implements CursoService {
     private final CapituloRepository capituloRepository;
     private final CursoMapper cursoMapper;
     private final EmailService emailService;
+    private final RabbitTemplate rabbitTemplate;
+    private final TopicExchange cursosExchange;
     
     @Override
     public CursoResponseDto crearCurso(CursoRequestDto cursoRequestDto) {
+        System.out.println("Creando curso: " + cursoRequestDto);
         Curso curso = cursoMapper.toEntity(cursoRequestDto);
         Curso cursoGuardado = cursoRepository.save(curso);
+        publicarEventoCursoCreado(cursoGuardado);
         
         log.info("Enviando notificación: Nuevo curso creado - ID: {}, Título: '{}'", 
                 cursoGuardado.getIdCurso(), cursoGuardado.getTitulo());
         
         // Enviar notificación por email
-        try {
-            emailService.enviarNotificacionNuevoCurso(cursoGuardado);
-        } catch (Exception e) {
-            log.warn("No se pudo enviar notificación por email para el curso: {} - Error: {}", 
-                    cursoGuardado.getTitulo(), e.getMessage());
-        }
+        // try {
+        //     emailService.enviarNotificacionNuevoCurso(cursoGuardado);
+        // } catch (Exception e) {
+        //     log.warn("No se pudo enviar notificación por email para el curso: {} - Error: {}", 
+        //             cursoGuardado.getTitulo(), e.getMessage());
+        // }
         
         return cursoMapper.toDto(cursoGuardado);
     }
@@ -154,5 +160,15 @@ public class CursoServiceImpl implements CursoService {
             throw new RuntimeException("Curso no encontrado con ID: " + id);
         }
         cursoRepository.deleteById(id);
+    }
+
+    public void publicarEventoCursoCreado(Curso curso) {
+        System.out.println("Publicando evento: curso creado -> " + curso);
+        String routingKey = "curso.creado";
+
+        // Enviamos el mensaje al exchange declarado en la configuración
+        rabbitTemplate.convertAndSend(cursosExchange.getName(), routingKey, curso);
+
+        System.out.println("Evento publicado: curso creado -> " + curso);
     }
 }

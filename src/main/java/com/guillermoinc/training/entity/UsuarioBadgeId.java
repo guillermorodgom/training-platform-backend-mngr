@@ -9,8 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProgresoUsuarioCursoId implements Serializable {
-    
+public class UsuarioBadgeId implements Serializable {
     private Long idUsuario;
-    private Integer idCurso;
+    private Long idBadge;
 }

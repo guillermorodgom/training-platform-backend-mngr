@@ -48,7 +48,7 @@ public class ProgresoUsuarioCursoServiceImpl implements ProgresoUsuarioCursoServ
 
         // Crear nuevo progreso
         ProgresoUsuarioCurso nuevoProgreso = ProgresoUsuarioCurso.builder()
-                .idUsuario(idUsuario)
+                .idUsuario(idUsuario.longValue())
                 .idCurso(idCurso)
                 .porcentaje(porcentaje)
                 .estado(determinarEstado(porcentaje))
