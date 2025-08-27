@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
@@ -15,16 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class UsuarioResponseDto {
     
-    private Long id;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private Role role;
-    private String department;
-    private String profilePicture;
-    private LocalDateTime joinDate;
-    private LocalDateTime lastActive;
-    private List<String> enrolledCourses;
-    private List<String> completedCourses;
-    private List<String> badges;
+    private Integer id;
+    private String nombre;
+    private String correo;
+    private Role rol;
+    private LocalDateTime fechaRegistro;
 }

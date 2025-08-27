@@ -11,6 +11,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ProgresoUsuarioCursoId implements Serializable {
     
-    private Long idUsuario;
+    private Integer idUsuario;
     private Integer idCurso;
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,4 +23,8 @@ public class CursoResponseDto {
     private String estado;
     private LocalDateTime fechaCreacion;
     private List<CapituloSimpleDto> capitulos;
+    
+    // Campos de progreso del usuario (opcionales)
+    private BigDecimal porcentajeProgreso;
+    private String estadoProgreso;
 }

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "progresousuariocurso")
+@Table(name = "ProgresoUsuarioCurso")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class ProgresoUsuarioCurso {
     
     @Id
     @Column(name = "id_usuario")
-    private Long idUsuario;
+    private Integer idUsuario;
     
     @Id
     @Column(name = "id_curso")

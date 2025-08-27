@@ -6,6 +6,7 @@ import com.sendgrid.*;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
     
     @Value("${sendgrid.api.key}")
@@ -45,6 +47,11 @@ public class EmailServiceImpl implements EmailService {
     
     @Override
     public void enviarEmail(String destinatario, String asunto, String contenido) {
+        if ("disabled".equals(sendGridApiKey)) {
+            log.warn("SendGrid deshabilitado. No se enviará email a: {}", destinatario);
+            return;
+        }
+        
         Email from = new Email(fromEmail, fromName);
         Email to = new Email(destinatario);
         Content content = new Content("text/html", contenido);
